@@ -42,3 +42,94 @@ tap.test('throw on resolve after reject', t => {
   t.throws(() => promise.resolve('pass'))
   t.end()
 })
+
+tap.test('catch', t => {
+  var promise = new AsyncValuePromise()
+
+  promise.catch(error => {
+    t.equal(error, 'hello')
+    t.end()
+  })
+
+  setImmediate(() => {
+    promise.reject('hello')
+  })
+})
+
+tap.test('all success', t => {
+  var promiseA = new AsyncValuePromise()
+  var promiseB = new AsyncValuePromise()
+  var promise = AsyncValuePromise.all([
+    promiseA,
+    promiseB
+  ])
+
+  promise
+    .then((values) => {
+      t.equal(values[0], 'first')
+      t.equal(values[1], 'second')
+      t.end()
+    })
+    .catch(() => {
+      t.fail('should not reject')
+    })
+
+  setImmediate(() => {
+    promiseB.resolve('second')
+    setImmediate(() => {
+      promiseA.resolve('first')
+    })
+  })
+})
+
+tap.test('all failure', t => {
+  var promiseA = new AsyncValuePromise()
+  var promiseB = new AsyncValuePromise()
+  var promise = AsyncValuePromise.all([ promiseA, promiseB ])
+
+  promise
+    .then(() => t.fail('should not resolve'))
+    .catch(error => {
+      t.equal(error, 'error')
+      t.end()
+    })
+
+  setImmediate(() => {
+    promiseA.resolve('success')
+    promiseB.reject('error')
+  })
+})
+
+tap.test('static resolve', t => {
+  var promise = AsyncValuePromise.resolve('hello')
+
+  promise
+    .then(value => {
+      t.equal(value, 'hello')
+      t.end()
+    })
+    .catch(() => t.fail('should not reject'))
+})
+
+tap.test('static reject', t => {
+  var promise = AsyncValuePromise.reject('hello')
+
+  promise
+    .then(() => t.fail('should not resolve'))
+    .catch(error => {
+      t.equal(error, 'hello')
+      t.end()
+    })
+})
+
+tap.test('catch', t => {
+  var promise = AsyncValuePromise.reject('world')
+
+  promise
+    .catch(name => 'hello ' + name)
+    .then(value => {
+      t.equal(value, 'hello world')
+      t.end()
+    })
+    .catch(() => t.fail('should not reject'))
+})

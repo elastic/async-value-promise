@@ -1,6 +1,6 @@
 {
   "name": "async-value-promise",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Creates a value/error pair to mimic promise behavior",
   "author": "Stephen Belanger <admin@stephenbelanger.com> (https://github.com/qard)",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "url": "https://github.com/Qard/async-value-promise/issues"
   },
   "dependencies": {
-    "async-value": "^1.0.0"
+    "async-value": "^1.2.2"
   },
   "devDependencies": {
     "benchmark-fn-list": "^1.0.0",
