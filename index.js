@@ -101,14 +101,18 @@ module.exports = class AsyncValuePromise {
       }
     }
 
-    for (let i = 0; i < count; i++) {
-      promises[i].then(value => {
-        if (failed) return
-        results[i] = value
-        if (--remaining === 0) {
-          promise.resolve(results)
-        }
-      }).catch(fail)
+    if (count === 0) {
+      promise.resolve([])
+    } else {
+      for (let i = 0; i < count; i++) {
+        promises[i].then(value => {
+          if (failed) return
+          results[i] = value
+          if (--remaining === 0) {
+            promise.resolve(results)
+          }
+        }).catch(fail)
+      }
     }
 
     return promise

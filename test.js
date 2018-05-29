@@ -100,6 +100,19 @@ tap.test('all failure', t => {
   })
 })
 
+tap.test('all empty', t => {
+  var promise = AsyncValuePromise.all([])
+
+  promise
+    .then((values) => {
+      t.equal(values.length, 0)
+      t.end()
+    })
+    .catch(() => {
+      t.fail('should not reject')
+    })
+})
+
 tap.test('static resolve', t => {
   var promise = AsyncValuePromise.resolve('hello')
 
